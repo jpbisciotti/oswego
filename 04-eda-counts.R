@@ -1,0 +1,35 @@
+eda_analysis <- purrr::map(
+  role_independent_nominal_predictor,
+  ~ oswego |> 
+    dplyr::count(
+      !!rlang::sym(role_dependent), 
+      !!rlang::sym(.x)
+    ) |>
+    dplyr::mutate(predictor = .x) |>
+    dplyr::rename(predictor_level = !!rlang::sym(.x)) |>
+    dplyr::select(predictor, predictor_level, ill, n) |>
+    #
+    dplyr::rename(n_cell = n) |>
+    dplyr::mutate(n_predictor = sum(n_cell), .by = predictor_level) |>
+    dplyr::mutate(n_dependent = sum(n_cell), .by = ill) |>
+    #
+    dplyr::mutate(n_cell_ok = all(n_cell[!is.na(predictor_level)] >= 5L)) |>
+    dplyr::mutate(n_predictor_ok = all(n_predictor[!is.na(predictor_level)] >= 5L)) |>
+    dplyr::mutate(n_dependent_ok = all(n_dependent[!is.na(predictor_level)] >= 10L)) |>
+    #
+    dplyr::mutate(all_dependent_levels = all(levels_dependent %in% ill)) |>
+    dplyr::mutate(all_predictor_levels = all(na.omit(levels_predictor %in% predictor_level))) |>
+    dplyr::mutate(all_cell_levels = all_dependent_levels & all_predictor_levels) 
+)
+
+eda_not_all_cell_levels  <- eda_analysis |>
+  purrr::keep(~ !all(dplyr::pull(.x, all_cell_levels)))
+
+eda_n_dependent_not_ok <- eda_analysis |>
+  purrr::keep(~ !all(dplyr::pull(.x, n_dependent_ok)))
+
+eda_n_predictor_not_ok <- eda_analysis |>
+  purrr::keep(~ !all(dplyr::pull(.x, n_predictor_ok)))
+
+eda_n_cell_not_ok <- eda_analysis |>
+  purrr::keep(~ !all(dplyr::pull(.x, n_cell_ok)))
