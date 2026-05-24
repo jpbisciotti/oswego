@@ -30,16 +30,13 @@ oswego <- oswego |>
   dplyr::mutate(incubation_datetime = onset_datetime - mt_datetime) |>
   dplyr::mutate(incubation_period = as.integer(incubation_datetime)) 
 
-# Missingness
-oswego <- oswego |>
-  dplyr::mutate(exposure_missing = ifelse(is.na(exposure_value), "Y", "N")) 
-
 if (FALSE) {
-  # We don not create onset_missing or onset_missing because they are
-  # analytically redundant. The onset_missing variable would map directly to
-  # ill. The incubation_missing variable would depend on incubation_period,
-  # which depends on ill.
-  oswego <- oswego |>
+  # Missingness
+  # exposure_value: missing if without a meal_time, complete if with a meal_time 
+  # onset_value: missing if well, complete if ill 
+  # incubation_period: missing if exposure or onset is missing, complete if both exposure and onset are complete
+  oswego |>
+    dplyr::mutate(exposure_missing = ifelse(is.na(exposure_value), "Y", "N")) |>
     dplyr::mutate(onset_missing = ifelse(is.na(onset_value), "Y", "N")) |>
     dplyr::mutate(incubation_missing = ifelse(is.na(incubation_period), "Y", "N")) 
 }
@@ -53,5 +50,5 @@ oswego <- oswego |>
   dplyr::select(-mt_month, -mt_day, -mt_pm, -mt_hour, -mt_hour24, -mt_minute, -meal_time) |> 
   dplyr::select(-onset_month, -onset_day, -onset_pm, -onset_hour, -onset_hour24, -onset_minute, -onset_date, -onset_time) |>
   dplyr::select(-mt_datetime, -onset_datetime, -incubation_datetime) |>
-  dplyr::select(-id)
-  
+  dplyr::select(-id) |> 
+  dplyr::select(-exposure_value, -onset_value, -incubation_period)
