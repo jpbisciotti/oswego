@@ -4,8 +4,6 @@ oswego <- dget(paste0(wd_root, "01-oswego-data.R"))
 
 source(paste0(wd_root, "02-clean-the-data.R"), local = TRUE)
 
-oswego
-
 dplyr::glimpse(oswego)
 
 # View(oswego)
@@ -29,5 +27,4 @@ eda_n_cell_not_ok
 source(paste0(wd_root, "06-eda-metrics.R"), local = TRUE)
 
 eda_metrics
-
 
