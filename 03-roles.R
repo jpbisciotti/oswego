@@ -3,10 +3,7 @@ role_id <- c("person_id")
 role_dependent <- c("ill")
 
 role_independent_numeric <- c(
-  "age", 
-  "exposure_value", 
-  "onset_value", 
-  "incubation_period"
+  "age"
 )
 
 role_independent_nominal_predictor <- c(
@@ -23,8 +20,7 @@ role_independent_nominal_predictor <- c(
   "cakes", 
   "vanilla_ice_cream", 
   "chocolate_ice_cream", 
-  "fruit_salad", 
-  "exposure_missing"
+  "fruit_salad"
 )
 
 role_independent_nominal_control <- c(
